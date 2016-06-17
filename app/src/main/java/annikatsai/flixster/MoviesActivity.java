@@ -1,9 +1,12 @@
 package annikatsai.flixster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -78,6 +81,7 @@ public class MoviesActivity extends AppCompatActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
+        setUpViewListener();
     }
 
     public void fetchTimelineAsync(int page) {
@@ -102,4 +106,28 @@ public class MoviesActivity extends AppCompatActivity {
         });
     }
 
+    public void launchDetailsView(String title, String overview, String posterpath, String rating,
+                                  String popularity) {
+        Intent i = new Intent(MoviesActivity.this, MovieDetailsActivity.class);
+        i.putExtra("title", title);
+        i.putExtra("overview", overview);
+        i.putExtra("posterPath", posterpath);
+        i.putExtra("rating", rating);
+        i.putExtra("popularity", popularity);
+        startActivity(i);
+    }
+
+    public void setUpViewListener() {
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+                String title = movies.get(pos).getTitle();
+                String overview = movies.get(pos).getOverview();
+                String posterPath = movies.get(pos).getPosterPath();
+                String rating = movies.get(pos).getRating();
+                String popularity = movies.get(pos).getPopularity();
+                launchDetailsView(title, overview, posterPath, rating, popularity);
+            }
+        });
+    }
 }

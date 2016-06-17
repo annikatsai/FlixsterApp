@@ -35,6 +35,9 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         // Lookup view for data population
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         TextView tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+        TextView tvRating = (TextView) convertView.findViewById(R.id.tvRating);
+        TextView tvPopularity = (TextView) convertView.findViewById(R.id.tvPopularity);
+
         ImageView ivPoster;
         boolean isLandscape = getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isLandscape){
@@ -52,6 +55,12 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         // Populate the data into the template view using the data object
         tvTitle.setText(movie.getTitle());
         tvOverview.setText(movie.getOverview());
+//        Double rating =  movie.getRating();
+//        Double popularity = movie.getPopularity();
+//        String ratingString = rating.toString();
+//        String popularityString = popularity.toString();
+//        tvRating.setText(movie.getRating());
+//        tvPopularity.setText(movie.getPopularity());
 
         //  Set image
 //        Picasso.with(getContext()).load(movie.getPosterPath()).into(ivPoster);
