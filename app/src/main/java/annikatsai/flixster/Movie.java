@@ -8,6 +8,10 @@ import java.util.ArrayList;
 
 public class Movie {
 
+    public enum MovieRatings {
+        BELOWFIVESTARS, ABOVEFIVESTARS
+    }
+
     public String getTitle() {
         return title;
     }
@@ -21,14 +25,30 @@ public class Movie {
     }
 
     public String getBackdropPath() {
-        return String.format("https://image.tmdb.org/t/p/w300/%s", backdropPath);
+            return String.format("https://image.tmdb.org/t/p/w300/%s", backdropPath);
+    }
+
+    public Double getRatingNumber() {
+        Double temp = (rating/(2.0)) * 10.0;
+        Long temp1 = Math.round(temp);
+        Double rating = temp1.doubleValue();
+        rating = rating/10.0;
+        return rating;
     }
 
     public String getRating() {
+        Double temp = (rating/(2.0)) * 10.0;
+        Long temp1 = Math.round(temp);
+        Double rating = temp1.doubleValue();
+        rating = rating/10.0;
         String ratingString = rating.toString();
         return ratingString;
     }
     public String getPopularity() {
+        Double temp = (popularity * 100.0);
+        Long temp1 = Math.round(temp);
+        Double popularity = temp1.doubleValue();
+        popularity = popularity/100.0;
         String popString = popularity.toString();
         return popString;
     }

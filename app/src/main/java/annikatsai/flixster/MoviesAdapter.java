@@ -19,6 +19,23 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
 
     public MoviesAdapter(Context context, ArrayList<Movie> movies) {
         super(context, R.layout.item_movie, movies);
+        //super(context, 0, movies);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        Movie movie = getItem(position);
+        if (movie.rating <= 5) {
+            return Movie.MovieRatings.BELOWFIVESTARS.ordinal();
+        }
+        else {
+            return Movie.MovieRatings.ABOVEFIVESTARS.ordinal();
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return Movie.MovieRatings.values().length;
     }
 
     @Override
@@ -28,45 +45,51 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         Movie movie = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
+        int type = getItemViewType(position);
+        ViewHolder mHolder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
+            convertView = getInflatedLayoutForType(type);
+
+            mHolder =  new ViewHolder();
+            mHolder.mTitle = (TextView) convertView.findViewById(R.id.tvTitle);
+            mHolder.mOverview = (TextView) convertView.findViewById(R.id.tvOverview);
+            mHolder.mPoster = (ImageView) convertView.findViewById(R.id.ivPoster);
+
+            convertView.setTag(mHolder);
         }
+        else
+            mHolder = (ViewHolder) convertView.getTag();
 
-        // Lookup view for data population
-        TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        TextView tvOverview = (TextView) convertView.findViewById(R.id.tvOverview);
-        TextView tvRating = (TextView) convertView.findViewById(R.id.tvRating);
-        TextView tvPopularity = (TextView) convertView.findViewById(R.id.tvPopularity);
-
-        ImageView ivPoster;
         boolean isLandscape = getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isLandscape){
-            ivPoster = (ImageView) convertView.findViewById(R.id.ivPoster);
-            Picasso.with(getContext()).load(movie.getBackdropPath()).placeholder(R.mipmap.ic_launcher).transform(new RoundedCornersTransformation(10, 10)).into(ivPoster);
+            Picasso.with(getContext()).load(movie.getBackdropPath()).placeholder(R.mipmap.ic_launcher).transform(new RoundedCornersTransformation(10, 10)).into(mHolder.mPoster);
         } else {
-            ivPoster = (ImageView) convertView.findViewById(R.id.ivPoster);
-            Picasso.with(getContext()).load(movie.getPosterPath()).placeholder(R.mipmap.ic_launcher).transform(new RoundedCornersTransformation(10, 10)).into(ivPoster);
+            Picasso.with(getContext()).load(movie.getPosterPath()).placeholder(R.mipmap.ic_launcher).transform(new RoundedCornersTransformation(10, 10)).into(mHolder.mPoster);
+
         }
 
-        // Clear out image from convertView
-        //ivPoster.setImageResource(0);
-        //ivBackdrop.setImageResource(0);
-
-        // Populate the data into the template view using the data object
-        tvTitle.setText(movie.getTitle());
-        tvOverview.setText(movie.getOverview());
-//        Double rating =  movie.getRating();
-//        Double popularity = movie.getPopularity();
-//        String ratingString = rating.toString();
-//        String popularityString = popularity.toString();
-//        tvRating.setText(movie.getRating());
-//        tvPopularity.setText(movie.getPopularity());
-
-        //  Set image
-//        Picasso.with(getContext()).load(movie.getPosterPath()).into(ivPoster);
-        //Picasso.with(getContext()).load(movie.getBackdropPath()).into(ivBackdrop);
-        // Return the completed view to render on screen
+        mHolder.mTitle.setText(movie.getTitle());
+        mHolder.mOverview.setText(movie.getOverview());
 
         return convertView;
     }
+
+    public View getInflatedLayoutForType(int type) {
+
+        if (type == Movie.MovieRatings.BELOWFIVESTARS.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
+        }
+        else if (type == Movie.MovieRatings.ABOVEFIVESTARS.ordinal()) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie2, null);
+        }
+        else
+            return null;
+    }
+
+    private static class ViewHolder {
+        private TextView mTitle;
+        private TextView mOverview;
+        private ImageView mPoster;
+    }
+
 }

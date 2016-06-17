@@ -34,6 +34,8 @@ public class MoviesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movies);
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        //ButterKnife.bind(this);
+
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,13 +109,14 @@ public class MoviesActivity extends AppCompatActivity {
     }
 
     public void launchDetailsView(String title, String overview, String posterpath, String rating,
-                                  String popularity) {
+                                  String popularity, Double ratingNumber) {
         Intent i = new Intent(MoviesActivity.this, MovieDetailsActivity.class);
         i.putExtra("title", title);
         i.putExtra("overview", overview);
         i.putExtra("posterPath", posterpath);
         i.putExtra("rating", rating);
         i.putExtra("popularity", popularity);
+        i.putExtra("ratingNumber", ratingNumber);
         startActivity(i);
     }
 
@@ -126,7 +129,8 @@ public class MoviesActivity extends AppCompatActivity {
                 String posterPath = movies.get(pos).getPosterPath();
                 String rating = movies.get(pos).getRating();
                 String popularity = movies.get(pos).getPopularity();
-                launchDetailsView(title, overview, posterPath, rating, popularity);
+                Double ratingNumber = movies.get(pos).getRatingNumber();
+                launchDetailsView(title, overview, posterPath, rating, popularity, ratingNumber);
             }
         });
     }
